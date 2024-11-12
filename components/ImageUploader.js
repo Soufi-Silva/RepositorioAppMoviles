@@ -18,8 +18,8 @@ const ImageUploader = ({ onUploadSuccess }) => {
             const result = await uploadImageToCloudinary(image.uri);
             if (result && result.secure_url) {
                 setUrl(result.secure_url);
-                onUploadSuccess(result.secure_url); // Actualiza la URL en NewReporte
-                setImage(null); // Oculta la imagen después de subirla
+                onUploadSuccess(result.secure_url);
+                setImage(null); 
             } else {
                 alert("No se pudo obtener la URL de la imagen.");
             }
@@ -32,7 +32,7 @@ const ImageUploader = ({ onUploadSuccess }) => {
     };
 
     const uploadImageToCloudinary = async (uri) => {
-        const cloudName = "dp7chjr9b";
+        const cloudName = "dp7chjr9b"; //datos de cloudinary
         const uploadPreset = "ml_default";
         const apiUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     button: {
-        marginBottom: 10, // Reduce el espacio entre botones
+        marginBottom: 10, 
     },
     imageContainer: {
         alignItems: 'center',
@@ -99,10 +99,10 @@ const styles = StyleSheet.create({
     image: {
         width: 200,
         height: 200,
-        marginBottom: 10, // Reduce el espacio entre la imagen y el botón
+        marginBottom: 10, 
     },
     successMessage: {
-        color: 'white', // Aquí puedes poner cualquier color que desees
+        color: 'white', 
         fontSize: 16,
         marginTop: 10,
     },
