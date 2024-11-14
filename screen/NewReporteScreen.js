@@ -7,7 +7,7 @@ function NewReporteScreen({ navigation }) {
     return (
         <View style={{ flex: 1 }}>
             <NewReporte 
-                onAddReporte={() => navigation.navigate('ReportesScreen')} // Navegar a ReportesScreen al agregar reporte
+                onAddReporte={() => navigation.navigate('ReportesScreen')} 
             />
         </View>
         

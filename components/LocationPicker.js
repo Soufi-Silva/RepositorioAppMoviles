@@ -7,15 +7,14 @@ function LocationPicker({ onLocationSelected }) {
     const [location, setLocation] = useState(null);
     const navigation = useNavigation();
 
-    async function verifyPermissions() {  //no se porque no entra a pedir los permisos, ver mas adelante
+    async function verifyPermissions() {  //no se porque no entra a pedir los permisos, ver mas adelante no olvidar
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
             Alert.alert('Permiso denegado', 'Se necesita el permiso de ubicación.');
             return false;
         }
-        return true; //falta revisar abajo porque el boton de "Usar ubicación del dispositivo"" ya no aparece y lo tenia funcionando 
+        return true; //falta revisar abajo porque el boton de "Usar ubicación del dispositivo"" ya no aparece y lo tenia funcionando,para la ubicacion en el momento
     }
-
     async function getLocationHandler() {
         const hasPermission = await verifyPermissions();
         if (!hasPermission) return;

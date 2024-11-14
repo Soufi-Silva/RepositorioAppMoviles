@@ -21,8 +21,6 @@ function ReporteItem(props) {
                     <Text style={styles.location}>Ubicación no disponible</Text>
                 )}
             </View>
-
-            {/* Mostrar imagen si existe */}
             {props.imageUrl && (
                 <Image
                     source={{ uri: props.imageUrl }}

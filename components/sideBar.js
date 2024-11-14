@@ -1,11 +1,21 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { logoutUser } from '../config/firebaseConfig'; 
 
 function Sidebar({ isVisible, toggleSidebar }) {
     const navigation = useNavigation();
 
     if (!isVisible) return null;
+    const handleLogout = async () => {
+        try {
+            await logoutUser();
+            toggleSidebar(); 
+            navigation.navigate('Login'); 
+        } catch (error) {
+            console.error('Error al cerrar sesión:', error);
+        }
+    };
 
     return (
         <TouchableWithoutFeedback onPress={toggleSidebar}>
@@ -16,7 +26,7 @@ function Sidebar({ isVisible, toggleSidebar }) {
                             <Text style={styles.title}>Menú</Text>
                             <View style={styles.avatarContainer}>
                                 <Image
-                                    source={require('../assets/logo.png')} //esto tenemos que cambiarlo sofi, cuando se haga todo el login
+                                    source={require('../assets/logo.png')}
                                     style={styles.avatar}
                                 />
                             </View>
@@ -61,6 +71,13 @@ function Sidebar({ isVisible, toggleSidebar }) {
                         >
                             <Text style={styles.menuText}>Chats</Text>
                         </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            style={styles.menuItem} 
+                            onPress={handleLogout}
+                        >
+                            <Text style={styles.menuText}>Cerrar Sesión</Text>
+                        </TouchableOpacity>
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -81,7 +98,7 @@ const styles = StyleSheet.create({
     },
     sidebar: {
         width: '70%',
-        backgroundColor: '#204C68', 
+        backgroundColor: '#204C68',
         padding: 25,
         height: '100%',
         borderTopRightRadius: 20,
@@ -122,7 +139,7 @@ const styles = StyleSheet.create({
         marginVertical: 12,
         paddingVertical: 15,
         paddingHorizontal: 20,
-        backgroundColor: '#3A9AD9', 
+        backgroundColor: '#3A9AD9',
         borderRadius: 8,
     },
     menuText: {

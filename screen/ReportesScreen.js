@@ -5,20 +5,27 @@ import IconButton from "../components/IconButton";
 import { ReporteContext } from "../store/reporte-context";
 import ReporteItem from "../components/ReporteItem";
 import { getReportes } from "../http";
-import Footer from "../components/Footer"; 
+import Footer from "../components/Footer";
+import Sidebar from "../components/sideBar";
+import { logoutUser } from "../config/firebaseConfig";
 
 function ReportesScreen() {
     const reporteCTX = useContext(ReporteContext);
     const [isError, setError] = useState(false);
+    const [isSidebarVisible, setSidebarVisible] = useState(false);
     const navigation = useNavigation();
+
+    const toggleSidebar = () => {
+        setSidebarVisible(!isSidebarVisible);
+    };
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <IconButton 
-                    name="add" 
-                    color="#000000" 
-                    onPress={() => navigation.navigate('NewReporte')}
+                    name="menu" 
+                    color="#000000"
+                    onPress={toggleSidebar}
                 />
             )
         });
@@ -37,18 +44,35 @@ function ReportesScreen() {
         getReport();
     }, [reporteCTX]);
 
+    const handleLogout = async () => {
+        try {
+            await logoutUser();
+            navigation.navigate("Login");
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
+    };
+
     function renderReporte(obj) {
-        return <ReporteItem 
-            id={obj.item.id}
-            name={obj.item.name} 
-            date={obj.item.date.toString()} 
-            location={obj.item.location} 
-            imageUrl={obj.item.imageUrl}
-        />;
+        return (
+            <ReporteItem
+                id={obj.item.id}
+                name={obj.item.name}
+                date={obj.item.date.toString()}
+                location={obj.item.location}
+                imageUrl={obj.item.imageUrl}
+            />
+        );
     }
 
     return (
         <SafeAreaView style={styles.container}>
+            {isSidebarVisible && (
+                <View style={styles.sidebarContainer}>
+                    <Sidebar isVisible={isSidebarVisible} toggleSidebar={toggleSidebar} />
+                </View>
+            )}
+
             <View style={styles.mainContent}>
                 {isError ? (
                     <Text>Error al cargar los reportes</Text>
@@ -61,7 +85,6 @@ function ReportesScreen() {
                 )}
             </View>
             <Footer navigation={navigation} />
-
         </SafeAreaView>
     );
 }
@@ -69,11 +92,14 @@ function ReportesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "flex-end",  
         backgroundColor: "#204C68",
     },
+    sidebarContainer: {
+        ...StyleSheet.absoluteFillObject, 
+        zIndex: 1000, 
+    },
     mainContent: {
-        flex: 1,  
+        flex: 1,
     },
 });
 

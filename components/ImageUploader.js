@@ -32,7 +32,7 @@ const ImageUploader = ({ onUploadSuccess }) => {
     };
 
     const uploadImageToCloudinary = async (uri) => {
-        const cloudName = "dp7chjr9b"; //datos de cloudinary
+        const cloudName = "dp7chjr9b";
         const uploadPreset = "ml_default";
         const apiUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 

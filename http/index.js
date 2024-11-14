@@ -36,7 +36,7 @@ export async function getReportes() {
                 lat: response.data[key].location?.lat,
                 lng: response.data[key].location?.lng
             },
-            imageUrl: response.data[key].imageUrl,  // Agregar la URL de la imagen
+            imageUrl: response.data[key].imageUrl, 
         };
         reportes.push(obj);
     }

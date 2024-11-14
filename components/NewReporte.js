@@ -38,7 +38,6 @@ function NewReporte({ onAddReporte }) {
             if (onAddReporte) {
                 onAddReporte(newReporte); 
             }
-            // Cambié goBack() por navigate('ReportesScreen')
             navigation.navigate('ReportesScreen'); 
             setLocation(null);
         } catch (error) {
