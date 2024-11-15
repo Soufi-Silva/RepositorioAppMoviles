@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#E1E8ED',
         textAlign: 'center',
-        flex: 1,
+        //flex: 1,
     },
     avatarContainer: {
         width: 40,

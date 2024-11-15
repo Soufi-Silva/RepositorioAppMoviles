@@ -19,7 +19,7 @@ function ReporteEditScreen(){
         reporte.name = name
         reporteCTX.editReporte(id, reporte)
         updateReporte(id, reporte)
-        navigator.navigate('Reporte')
+        navigator.goBack();
     }
     function deleteReporte(){
         reporteCTX.deleteReporte(id);
