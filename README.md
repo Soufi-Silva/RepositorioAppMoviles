@@ -37,6 +37,7 @@ Se planea a corto plazo implementar constantes mejoras en la experiencia de usua
 - [ ] Chats.
 - [ ] Edición de imagen y contenido.
 - [ ] Avatares personalizados.
+- [ ] Ubicacion en Tiempo real.
 
 ## Inicio de sesión
 
@@ -65,6 +66,7 @@ Los resultados finales muestran cómo los wireframes se transformaron en una apl
 
 - **Pantalla de Login y Registro**: Se respetó el esquema de diseño original, con mejoras visuales como la incorporación del logotipo de la aplicación y un fondo sólido para mejorar la legibilidad.
 - **Feed Principal y Menú Lateral**: Se implementó un diseño moderno, con reportes visualmente atractivos y un menú lateral que permite una navegación sencilla y eficiente.
+- **Reportes**: Los reportes hacen uso de una ubicacion entregada por el usuario mediante un mapa y un menú de seleccion de imagenes de forma sencilla y eficiente.
 
 ### Capturas de Pantallas de los Resultados
 
