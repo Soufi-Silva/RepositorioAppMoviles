@@ -70,10 +70,9 @@ Los resultados finales muestran cómo los wireframes se transformaron en una apl
 
 ![Login](https://github.com/user-attachments/assets/a1460221-9f88-4d90-84ab-ffe0bc873bf7)
 ![Register](https://github.com/user-attachments/assets/08e8c9b5-c5b7-475f-b742-8eee4fec974b)
-![ReportesScreen](https://prod-files-secure.s3.us-west-2.amazonaws.com/067b969d-2e6e-44a0-8f70-cd1125cfc328/86a6349d-ae49-4c30-98b7-12f118c3a64d/ReportesScreen.jpg)
+![ReportesScreen](https://github.com/user-attachments/assets/b4b3eb4b-a39d-494a-b581-aceb6ea6d2d3)
 ![MenúLateral](https://github.com/user-attachments/assets/58165a9a-98fe-433f-9508-4d77706b145f)
 ![Edit](https://github.com/user-attachments/assets/586dfc8d-d79f-4cae-b5da-cf8a105803e3)
 ![resultados](https://github.com/user-attachments/assets/d57cfd46-8b93-4a5c-9753-389fb0cf5f05)
 
 ---
-
