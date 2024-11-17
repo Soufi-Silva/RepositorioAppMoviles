@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { saveReporte } from '../http';
 import { LocationContext } from '../context/LocationContext';
@@ -51,48 +51,50 @@ function NewReporte({ onAddReporte }) {
 
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/logo.png')} style={styles.logo} />
-            <Text style={styles.text}>Nuevo Reporte</Text>
-            <TextInput
-                onChangeText={setName}
-                value={name}
-                style={styles.input}
-                placeholder="Descripción de la incidencia"
-                color="white"
-            />
-            <TouchableOpacity style={styles.button} onPress={handleSelectLocation}>
-                <Text style={styles.buttonText}>Seleccionar Ubicación</Text>
-            </TouchableOpacity>
-            {location && (
-                <Text style={styles.locationText}>
-                    Ubicación seleccionada: {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
-                </Text>
-            )}
-            <ImageUploader onUploadSuccess={setImageUrl} />
-            <TouchableOpacity style={styles.button} onPress={handleAddReporte}>
-                <Text style={styles.buttonText}>Guardar Reporte</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.navigate('ReportesScreen')}>
-                <Text style={styles.buttonText}>Cancelar</Text>
-            </TouchableOpacity>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+                <Image source={require('../assets/logo.png')} style={styles.logo} />
+                <Text style={styles.text}>Nuevo Reporte</Text>
+                <TextInput
+                    onChangeText={setName}
+                    value={name}
+                    style={styles.input}
+                    placeholder="Descripción de la incidencia"
+                    color="white"
+                />
+                <TouchableOpacity style={styles.button} onPress={handleSelectLocation}>
+                    <Text style={styles.buttonText}>Seleccionar Ubicación</Text>
+                </TouchableOpacity>
+                {location && (
+                    <Text style={styles.locationText}>
+                        Ubicación seleccionada: {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
+                    </Text>
+                )}
+                <ImageUploader onUploadSuccess={setImageUrl} />
+                <TouchableOpacity style={styles.button} onPress={handleAddReporte}>
+                    <Text style={styles.buttonText}>Guardar Reporte</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.navigate('ReportesScreen')}>
+                    <Text style={styles.buttonText}>Cancelar</Text>
+                </TouchableOpacity>
+            </ScrollView>
             <Footer navigation={navigation} /> 
         </View>
-        
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "flex-start",
-        alignItems: "center",
         backgroundColor: "#204C68",
+    },
+    scrollContent: {
         paddingHorizontal: 20,
-        paddingTop: 40, 
+        paddingTop: 40,
+        alignItems: 'center',
     },
     logo: {
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
         marginBottom: 20,
     },
     input: {
@@ -104,7 +106,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#5499c7",
         borderRadius: 10,
         color: "white",
-        fontSize: 16
+        fontSize: 16,
     },
     text: {
         color: "#E1E8ED",
@@ -124,14 +126,14 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#fff",
         fontSize: 16,
-        fontWeight: "600"
+        fontWeight: "600",
     },
     locationText: {
         color: "#E1E8ED",
         fontSize: 14,
         marginTop: 12,
         paddingHorizontal: 20,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     cancelButton: {
         backgroundColor: "#FF4B4B",
@@ -141,6 +143,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: "90%",
         alignItems: "center",
+        marginBottom:100,
     },
 });
 
