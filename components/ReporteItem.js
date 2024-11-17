@@ -30,7 +30,7 @@ function ReporteItem(props) {
             )}
 
             <Pressable style={styles.editButton} onPress={goToEdit}>
-                <Text style={styles.buttonText}>Editar</Text>
+                <Text style={styles.buttonText}>Gestión de reportes</Text>
             </Pressable>
         </View>
     );
