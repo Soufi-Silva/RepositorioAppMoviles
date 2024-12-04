@@ -57,7 +57,7 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
     try {
-      await registerUser(email, password, rut, username, avatarUrl); // Pasar avatarUrl como parámetro
+      await registerUser(email, password, rut, username, avatarUrl); 
       console.log('Usuario registrado exitosamente');
       navigation.navigate('Login');
     } catch (error) {

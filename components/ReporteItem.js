@@ -8,14 +8,13 @@ function ReporteItem(props) {
     const [formattedDate, setFormattedDate] = useState("");
     const [displayLocation, setDisplayLocation] = useState("Ubicación desconocida");
 
-    // Formatear la fecha
     useEffect(() => {
         const dateObj = new Date(props.date);
         const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
         setFormattedDate(dateObj.toLocaleDateString("es-ES", options));
     }, [props.date]);
 
-    // Obtener dirección legible
+
     useEffect(() => {
         async function fetchAddress() {
             if (props.location?.lat && props.location?.lng) {
@@ -32,7 +31,6 @@ function ReporteItem(props) {
 
     return (
         <View style={styles.container}>
-            {/* Header con avatar y nombre de usuario */}
             {props.user && (
                 <View style={styles.header}>
                     <Image
@@ -45,7 +43,6 @@ function ReporteItem(props) {
                 </View>
             )}
 
-            {/* Imagen del reporte */}
             {props.imageUrl && (
                 <Image
                     source={{ uri: props.imageUrl }}
@@ -53,8 +50,6 @@ function ReporteItem(props) {
                     resizeMode="cover"
                 />
             )}
-
-            {/* Detalles del reporte */}
             <View style={styles.textContainer}>
                 <Text style={styles.title}>{props.name}</Text>
                 <Text style={styles.date}>{formattedDate}</Text>

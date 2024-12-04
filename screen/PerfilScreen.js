@@ -1,23 +1,23 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList, Button } from 'react-native';
 import { UserContext } from '../context/UserContext';
-import { getReportes } from '../http'; // Llama a los reportes desde Firebase
+import { getReportes } from '../http'; 
 import * as ImagePicker from 'expo-image-picker';
 
 function PerfilScreen() {
-    const { user } = useContext(UserContext); // Usuario autenticado
+    const { user } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false);
     const [username, setUsername] = useState(user?.username || '');
     const [profileImage, setProfileImage] = useState(user?.profileImage || 'https://via.placeholder.com/100');
-    const [userPosts, setUserPosts] = useState([]); // Reportes del usuario
+    const [userPosts, setUserPosts] = useState([]); 
 
-    // Obtener los reportes del usuario
+    
     useEffect(() => {
         async function fetchUserPosts() {
             try {
-                const allReportes = await getReportes(); // Obtener todos los reportes
+                const allReportes = await getReportes(); 
                 const filteredReportes = allReportes.filter(
-                    (reporte) => reporte.user?.id === user?.id // Filtrar solo los del usuario autenticado
+                    (reporte) => reporte.user?.id === user?.id 
                 );
                 setUserPosts(filteredReportes);
             } catch (error) {
@@ -27,8 +27,8 @@ function PerfilScreen() {
         fetchUserPosts();
     }, [user]);
 
-    const handleSaveProfile = () => {
-        // Aquí puedes implementar la lógica para guardar los cambios en la base de datos
+    const handleSaveProfile = () => { //Implementar la logica de esta wea mas adelante 
+    
         console.log('Datos guardados:', { username, profileImage });
         setIsEditing(false);
     };
@@ -81,7 +81,7 @@ function PerfilScreen() {
 
             <Text style={styles.sectionTitle}>Tus Posts</Text>
             <FlatList
-                data={userPosts} // Mostrar solo los posts del usuario autenticado
+                data={userPosts} 
                 renderItem={renderPost}
                 keyExtractor={(item) => item.id}
                 numColumns={3}
