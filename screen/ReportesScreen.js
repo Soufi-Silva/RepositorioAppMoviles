@@ -61,9 +61,11 @@ function ReportesScreen() {
                 date={obj.item.date.toString()}
                 location={obj.item.location}
                 imageUrl={obj.item.imageUrl}
+                user={obj.item.user} // Incluye el objeto user
             />
         );
     }
+    
 
     return (
         <SafeAreaView style={styles.container}>

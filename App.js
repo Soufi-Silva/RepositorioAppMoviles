@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity, Text } from 'react-native';
-import { subscribeToAuthChanges } from './config/authState'; 
+import { subscribeToAuthChanges } from './config/authState';
 import { auth } from './config/firebaseConfig';
 import ReportesScreen from './screen/ReportesScreen';
 import PerfilScreen from './screen/PerfilScreen';
@@ -18,6 +18,7 @@ import RegisterScreen from './screen/RegisterScreen';
 import Sidebar from './components/sideBar';
 import ReporteContextProvider from './store/reporte-context';
 import { LocationProvider } from './context/LocationContext';
+import { UserProvider, UserContext } from './context/UserContext';
 
 const Stack = createStackNavigator();
 
@@ -32,47 +33,49 @@ export default function App() {
         const unsubscribe = subscribeToAuthChanges((authUser) => {
             setUser(authUser);
         });
-        return () => unsubscribe(); 
+        return () => unsubscribe();
     }, []);
 
     return (
         <>
             <StatusBar style="dark" />
-            <LocationProvider>
-                <ReporteContextProvider>
-                    <NavigationContainer>
-                        <Stack.Navigator
-                            screenOptions={{
-                                headerRight: () => (
-                                    <TouchableOpacity onPress={toggleSidebar} style={{ marginRight: 10 }}>
-                                        <Text style={{ fontSize: 18 }}>☰</Text>
-                                    </TouchableOpacity>
-                                ),
-                            }}
-                        >
-                            {user ? (
-                                <>
-                                    <Stack.Screen name="ReportesScreen" component={ReportesScreen} />
-                                    <Stack.Screen name="Reporte" component={ReportesScreen} />
-                                    <Stack.Screen name="Edit" component={ReporteEditScreen} />
-                                    <Stack.Screen name="NewReporte" component={NewReporteScreen} />
-                                    <Stack.Screen name="Map" component={Map} />
-                                    <Stack.Screen name="Perfil" component={PerfilScreen} />
-                                    <Stack.Screen name="Configuracion" component={ConfiguracionScreen} />
-                                    <Stack.Screen name="MisReportes" component={MisReportesScreen} />
-                                    <Stack.Screen name="Chats" component={ChatsScreen} />
-                                </>
-                            ) : (
-                                <>
-                                    <Stack.Screen name="Login" component={LoginScreen} />
-                                    <Stack.Screen name="Register" component={RegisterScreen} />
-                                </>
-                            )}
-                        </Stack.Navigator>
-                        <Sidebar isVisible={isSidebarVisible} toggleSidebar={toggleSidebar} />
-                    </NavigationContainer>
-                </ReporteContextProvider>
-            </LocationProvider>
+            <UserProvider>
+                <LocationProvider>
+                    <ReporteContextProvider>
+                        <NavigationContainer>
+                            <Stack.Navigator
+                                screenOptions={{
+                                    headerRight: () => (
+                                        <TouchableOpacity onPress={toggleSidebar} style={{ marginRight: 10 }}>
+                                            <Text style={{ fontSize: 18 }}>☰</Text>
+                                        </TouchableOpacity>
+                                    ),
+                                }}
+                            >
+                                {user ? (
+                                    <>
+                                        <Stack.Screen name="ReportesScreen" component={ReportesScreen} />
+                                        <Stack.Screen name="Reporte" component={ReportesScreen} />
+                                        <Stack.Screen name="Edit" component={ReporteEditScreen} />
+                                        <Stack.Screen name="NewReporte" component={NewReporteScreen} />
+                                        <Stack.Screen name="Map" component={Map} />
+                                        <Stack.Screen name="Perfil" component={PerfilScreen} />
+                                        <Stack.Screen name="Configuracion" component={ConfiguracionScreen} />
+                                        <Stack.Screen name="MisReportes" component={MisReportesScreen} />
+                                        <Stack.Screen name="Chats" component={ChatsScreen} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <Stack.Screen name="Login" component={LoginScreen} />
+                                        <Stack.Screen name="Register" component={RegisterScreen} />
+                                    </>
+                                )}
+                            </Stack.Navigator>
+                            <Sidebar isVisible={isSidebarVisible} toggleSidebar={toggleSidebar} />
+                        </NavigationContainer>
+                    </ReporteContextProvider>
+                </LocationProvider>
+            </UserProvider>
         </>
     );
 }
