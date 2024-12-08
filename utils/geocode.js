@@ -32,6 +32,9 @@ async function verifyPermissions() {
     }
 }
 
+
+
+
 async function getLocation() {
     try {
         await verifyPermissions();
