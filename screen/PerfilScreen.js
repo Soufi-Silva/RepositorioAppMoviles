@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList, Button } from 'react-native';
 import { UserContext } from '../context/UserContext';
-import { getReportes } from '../http'; 
+import { getReportes } from '../http';
 import * as ImagePicker from 'expo-image-picker';
 
 function PerfilScreen() {
@@ -9,26 +9,30 @@ function PerfilScreen() {
     const [isEditing, setIsEditing] = useState(false);
     const [username, setUsername] = useState(user?.username || '');
     const [profileImage, setProfileImage] = useState(user?.profileImage || 'https://via.placeholder.com/100');
-    const [userPosts, setUserPosts] = useState([]); 
+    const [userPosts, setUserPosts] = useState([]);
 
-    
+
+
     useEffect(() => {
         async function fetchUserPosts() {
             try {
                 const allReportes = await getReportes(); 
+
                 const filteredReportes = allReportes.filter(
-                    (reporte) => reporte.user?.id === user?.id 
+                    (reporte) => reporte.user?.username === user?.username
                 );
-                setUserPosts(filteredReportes);
+                setUserPosts(filteredReportes); 
             } catch (error) {
                 console.error('Error al cargar los reportes del usuario:', error);
             }
         }
+    
         fetchUserPosts();
     }, [user]);
-
-    const handleSaveProfile = () => { //Implementar la logica de esta wea mas adelante 
     
+    
+    const handleSaveProfile = () => { //Implementar la logica de esta wea mas adelante 
+
         console.log('Datos guardados:', { username, profileImage });
         setIsEditing(false);
     };
@@ -81,7 +85,7 @@ function PerfilScreen() {
 
             <Text style={styles.sectionTitle}>Tus Posts</Text>
             <FlatList
-                data={userPosts} 
+                data={userPosts}
                 renderItem={renderPost}
                 keyExtractor={(item) => item.id}
                 numColumns={3}
