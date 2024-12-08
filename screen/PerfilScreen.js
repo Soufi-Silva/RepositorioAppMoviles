@@ -8,7 +8,7 @@ function PerfilScreen() {
     const { user } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false);
     const [username, setUsername] = useState(user?.username || '');
-    const [profileImage, setProfileImage] = useState(user?.profileImage || 'https://via.placeholder.com/100');
+    const [profileImage, setProfileImage] = useState(user?.avatar || 'https://via.placeholder.com/100');
     const [userPosts, setUserPosts] = useState([]); 
 
     

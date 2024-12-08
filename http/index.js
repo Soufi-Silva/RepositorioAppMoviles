@@ -27,6 +27,7 @@ export async function saveReporte(task) {
                 id: currentUser.uid,
                 username: userData.username,
                 email: userData.email,
+    
             },
         };
 

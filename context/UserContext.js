@@ -21,12 +21,14 @@ export const UserProvider = ({ children }) => {
                         email: currentUser.email,
                         username: userData.username,
                         rut: userData.rut,
+                        avatar: userData.avatar || 'https://via.placeholder.com/100', 
                     });
                 } else {
                     console.error('No se encontraron datos personalizados del usuario.');
                     setUser({
                         uid: currentUser.uid,
                         email: currentUser.email,
+                        avatar: 'https://via.placeholder.com/100', 
                     });
                 }
             } else {

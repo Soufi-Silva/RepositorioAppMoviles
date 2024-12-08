@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { registerUser } from '../config/firebaseConfig';
+import ImageUploader from '../components/ImageUploader';  // Importa el componente ImageUploader
 
 const formatRut = (rut) => {
   rut = rut.replace(/\./g, '').replace(/-/g, '');
@@ -18,37 +18,10 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [rut, setRut] = useState('');
   const [username, setUsername] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('');  // Estado para la URL de la imagen de perfil
 
   const handleRutChange = (text) => setRut(formatRut(text));
   const handleUsernameChange = (text) => setUsername(text.startsWith('@') ? text : '@' + text);
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      console.log('Imagen seleccionada:', result.assets[0].uri); // Debug
-      setAvatarUrl(result.assets[0].uri); // Guardar la URL local de la imagen seleccionada
-    } else {
-      console.log('Selección de imagen cancelada');
-    }
-  };
-
-  const handleImageChange = () => {
-    Alert.alert(
-      'Cambiar Imagen',
-      '¿Quieres seleccionar otra imagen?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Seleccionar', onPress: pickImage },
-      ]
-    );
-  };
 
   const handleRegister = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,7 +30,7 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
     try {
-      await registerUser(email, password, rut, username, avatarUrl); 
+      await registerUser(email, password, rut, username, avatarUrl); // Pasamos avatarUrl al registrar
       console.log('Usuario registrado exitosamente');
       navigation.navigate('Login');
     } catch (error) {
@@ -67,17 +40,6 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo.png')} style={styles.logo} />
-      {avatarUrl ? (
-        <TouchableOpacity onPress={handleImageChange}>
-          <Image source={{ uri: avatarUrl }} style={styles.avatar} />
-          <Text style={styles.changeImageText}>Cambiar Imagen</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={pickImage} style={styles.pickImageButton}>
-          <Text style={styles.pickImageText}>Seleccionar Imagen de Perfil</Text>
-        </TouchableOpacity>
-      )}
       <TextInput
         placeholder="RUT"
         value={rut}
@@ -107,6 +69,10 @@ export default function RegisterScreen({ navigation }) {
         secureTextEntry
         placeholderTextColor="#A0A0A0"
       />
+      
+      {/* Componente para subir y mostrar la imagen de perfil */}
+      <ImageUploader onUploadSuccess={setAvatarUrl} />
+
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Crear cuenta</Text>
       </TouchableOpacity>
@@ -124,32 +90,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-  },
-  changeImageText: {
-    color: '#A0D1F5',
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  pickImageButton: {
-    backgroundColor: '#3A9AD9',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 15,
-  },
-  pickImageText: {
-    color: '#FFFFFF',
-    textAlign: 'center',
   },
   input: {
     width: '100%',
