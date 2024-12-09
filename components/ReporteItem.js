@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, Pressable, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { reverseGeocode } from "../utils/geocode";
+import { getDatabase, ref, get, runTransaction, onValue } from "firebase/database"; 
+import { UserContext } from "../context/UserContext"; 
 
 function ReporteItem(props) {
     const navigator = useNavigation();
+    const { user } = useContext(UserContext); 
     const [formattedDate, setFormattedDate] = useState("");
     const [displayLocation, setDisplayLocation] = useState("Ubicación desconocida");
+    const [likes, setLikes] = useState(props.likes || 0); 
+    const [hasLiked, setHasLiked] = useState(false); 
 
     useEffect(() => {
         const dateObj = new Date(props.date);
         const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
         setFormattedDate(dateObj.toLocaleDateString("es-ES", options));
     }, [props.date]);
-
 
     useEffect(() => {
         async function fetchAddress() {
@@ -25,9 +29,71 @@ function ReporteItem(props) {
         fetchAddress();
     }, [props.location]);
 
+    useEffect(() => {
+        const db = getDatabase();
+
+        const likesRef = ref(db, `reportes/${props.id}/likesByUser/${user?.uid}`);
+        get(likesRef).then(snapshot => {
+            if (snapshot.exists()) {
+                setHasLiked(true); 
+            }
+        });
+
+        const likesCountRef = ref(db, `reportes/${props.id}/likes`);
+        const unsubscribe = onValue(likesCountRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setLikes(snapshot.val()); 
+            }
+        });
+
+        return () => {
+            unsubscribe(); 
+        };
+    }, [user, props.id]);
+
     function goToEdit() {
         navigator.navigate("Edit", { id: props.id });
     }
+
+    // agregar o quitar un "me gusta"
+    const handleLike = async () => {
+        const db = getDatabase();
+        const reporteRef = ref(db, `reportes/${props.id}`);
+
+        if (hasLiked) {
+            await runTransaction(reporteRef, (reporte) => {
+                if (reporte) {
+                    if (reporte.likesByUser && reporte.likesByUser[user.uid]) {
+                        delete reporte.likesByUser[user.uid];
+                        reporte.likes = (reporte.likes || 0) - 1; 
+                    }
+                }
+                return reporte;
+            });
+
+            
+            setLikes(likes - 1);
+            setHasLiked(false); 
+        } else {
+            
+            await runTransaction(reporteRef, (reporte) => {
+                if (reporte) {
+                    
+                    if (!reporte.likesByUser) {
+                        reporte.likesByUser = {};
+                    }
+                    if (!reporte.likesByUser[user.uid]) {
+                        reporte.likesByUser[user.uid] = true;
+                        reporte.likes = (reporte.likes || 0) + 1; 
+                    }
+                }
+                return reporte;
+            });
+
+            setLikes(likes + 1);
+            setHasLiked(true); 
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -55,6 +121,13 @@ function ReporteItem(props) {
                 <Text style={styles.date}>{formattedDate}</Text>
                 <Text style={styles.location}>{displayLocation}</Text>
             </View>
+
+            {/* Botón de like */}
+            <Pressable style={styles.likeButton} onPress={handleLike}>
+                <Text style={styles.buttonText}>
+                    ❤️ {likes} Me gusta
+                </Text>
+            </Pressable>
 
             <Pressable style={styles.editButton} onPress={goToEdit}>
                 <Text style={styles.buttonText}>Gestión de reportes</Text>
@@ -119,6 +192,13 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 8,
         marginVertical: 10,
+    },
+    likeButton: {
+        backgroundColor: "#FF6347", 
+        paddingVertical: 10,
+        borderRadius: 8,
+        alignItems: "center",
+        marginTop: 10,
     },
     editButton: {
         backgroundColor: "#E67E22",

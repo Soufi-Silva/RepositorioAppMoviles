@@ -10,10 +10,6 @@ function PerfilScreen() {
     const [username, setUsername] = useState(user?.username || '');
     const [profileImage, setProfileImage] = useState(user?.avatar || 'https://via.placeholder.com/100');
     const [userPosts, setUserPosts] = useState([]); 
-    const [profileImage, setProfileImage] = useState(user?.profileImage || 'https://via.placeholder.com/100');
-    const [userPosts, setUserPosts] = useState([]);
-
-
 
     useEffect(() => {
         async function fetchUserPosts() {
@@ -94,6 +90,7 @@ function PerfilScreen() {
                 style={styles.postsContainer}
             />
         </View>
+        
     );
 }
 

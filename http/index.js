@@ -1,5 +1,5 @@
 import { auth, database } from '../config/firebaseConfig'; 
-import { ref, push, get } from 'firebase/database'; 
+import { ref, push, get, set } from 'firebase/database'; 
 import axios from 'axios';
 
 const URL = 'https://appmoviles-9de8d-default-rtdb.firebaseio.com/';
@@ -20,15 +20,15 @@ export async function saveReporte(task) {
 
         const userData = userSnapshot.val();
 
-    
         const taskWithUser = {
             ...task,
             user: {
                 id: currentUser.uid,
                 username: userData.username,
                 email: userData.email,
-    
             },
+            likes: 0, 
+            likesByUser: {} 
         };
 
         await push(ref(database, 'reportes'), taskWithUser);
@@ -45,11 +45,11 @@ export function removeReporte(id) {
 
 // EDITAR
 export function updateReporte(id, task) {
-    return axios.put(`${URL}/reportes/${id}.json`, task);
+    const reporteRef = ref(database, `reportes/${id}`);
+    return set(reporteRef, task); 
 }
 
 // OBTENER DESDE BASE DE DATOS
-
 export async function getReportes() {
     try {
         const response = await axios.get(`${URL}/reportes.json`);
@@ -72,6 +72,8 @@ export async function getReportes() {
                     email: report.user?.email || "Correo no disponible",
                     avatar: report.user?.avatar || "https://via.placeholder.com/50",
                 },
+                likes: report.likes || 0,
+                likesByUser: report.likesByUser || {}, 
             };
 
             reportes.push(obj);
@@ -83,5 +85,3 @@ export async function getReportes() {
         throw error;
     }
 }
-
-
