@@ -12,6 +12,7 @@ function ReporteItem(props) {
     const [displayLocation, setDisplayLocation] = useState("Ubicación desconocida");
     const [likes, setLikes] = useState(props.likes || 0); 
     const [hasLiked, setHasLiked] = useState(false); 
+    const [isUserReport, setIsUserReport] = useState(false);  
 
     useEffect(() => {
         const dateObj = new Date(props.date);
@@ -30,6 +31,12 @@ function ReporteItem(props) {
     }, [props.location]);
 
     useEffect(() => {
+        if (props.user?.username === user?.username) {
+            setIsUserReport(true);
+        } else {
+            setIsUserReport(false);
+        }
+
         const db = getDatabase();
 
         const likesRef = ref(db, `reportes/${props.id}/likesByUser/${user?.uid}`);
@@ -49,13 +56,12 @@ function ReporteItem(props) {
         return () => {
             unsubscribe(); 
         };
-    }, [user, props.id]);
+    }, [user, props.id, props.user?.username]); 
 
     function goToEdit() {
         navigator.navigate("Edit", { id: props.id });
     }
 
-    // agregar o quitar un "me gusta"
     const handleLike = async () => {
         const db = getDatabase();
         const reporteRef = ref(db, `reportes/${props.id}`);
@@ -71,14 +77,11 @@ function ReporteItem(props) {
                 return reporte;
             });
 
-            
             setLikes(likes - 1);
             setHasLiked(false); 
         } else {
-            
             await runTransaction(reporteRef, (reporte) => {
                 if (reporte) {
-                    
                     if (!reporte.likesByUser) {
                         reporte.likesByUser = {};
                     }
@@ -99,8 +102,7 @@ function ReporteItem(props) {
         <View style={styles.container}>
             {props.user && (
                 <View style={styles.header}>
-                    <Image
-                        source={{
+                    <Image source={{
                             uri: props.user.avatar,
                         }}
                         style={styles.avatar}
@@ -122,16 +124,17 @@ function ReporteItem(props) {
                 <Text style={styles.location}>{displayLocation}</Text>
             </View>
 
-            {/* Botón de like */}
             <Pressable style={styles.likeButton} onPress={handleLike}>
                 <Text style={styles.buttonText}>
                     ❤️ {likes} Me gusta
                 </Text>
             </Pressable>
 
-            <Pressable style={styles.editButton} onPress={goToEdit}>
-                <Text style={styles.buttonText}>Gestión de reportes</Text>
-            </Pressable>
+            {isUserReport && (
+                <Pressable style={styles.editButton} onPress={goToEdit}>
+                    <Text style={styles.buttonText}>Gestión de reportes</Text>
+                </Pressable>
+            )}
         </View>
     );
 }
@@ -193,11 +196,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginVertical: 10,
     },
-    likeButton: {
-        backgroundColor: "#FF6347", 
+    likeButton: { 
         paddingVertical: 10,
         borderRadius: 8,
-        alignItems: "center",
+        alignItems: "flex-end",
         marginTop: 10,
     },
     editButton: {

@@ -29,7 +29,7 @@ function PerfilScreen() {
     }, [user]);
     
     
-    const handleSaveProfile = () => { //Implementar la logica de esta wea mas adelante 
+    const handleSaveProfile = () => { //Implementar la logica mas adelante 
 
         console.log('Datos guardados:', { username, profileImage });
         setIsEditing(false);
