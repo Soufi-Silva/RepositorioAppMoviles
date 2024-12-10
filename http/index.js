@@ -46,8 +46,9 @@ export function removeReporte(id) {
 // EDITAR
 export function updateReporte(id, task) {
     const reporteRef = ref(database, `reportes/${id}`);
-    return set(reporteRef, task); 
+    return set(reporteRef, task);  // Aquí 'task' ya incluye la fecha de modificación.
 }
+
 
 // OBTENER DESDE BASE DE DATOS
 export async function getReportes() {

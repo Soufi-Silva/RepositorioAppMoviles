@@ -78,4 +78,9 @@ export const logoutUser = async () => {
   }
 };
 
+export function updateReporte(id, task) {
+  const reporteRef = ref(database, `reportes/${id}`);
+  return set(reporteRef, task); 
+}
+
 export { auth, database };

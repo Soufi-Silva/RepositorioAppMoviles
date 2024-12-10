@@ -16,11 +16,17 @@ function ReporteEditScreen() {
     const [name, setName] = useState(reporte?.name);
 
     function editReporte() {
-        reporte.name = name;
-        reporteCTX.editReporte(id, reporte);
-        updateReporte(id, reporte);
+        const reporteActualizado = {
+            ...reporte,                
+            name: name,                
+            date: new Date().toISOString(), 
+        };
+    
+        reporteCTX.editReporte(id, reporteActualizado);
+    
         navigator.goBack();
     }
+    
 
     function deleteReporte() {
         reporteCTX.deleteReporte(id);
