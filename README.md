@@ -29,7 +29,7 @@ Para ello, hemos establecido algunos objetivos específicos que OSP debe cumplir
 ## Características a Futuro v.2
 
 Se planea a corto plazo implementar constantes mejoras en la experiencia de usuario:
-Actualmente las version 1.2 cuenta con los siguientes avances:
+Actualmente la version 1.2 cuenta con los siguientes avances:
 - [ ] Perfil de Usuario. (listo)
 - [ ] Mis reportes. (listo)
 - [ ] Configuración. (tema gris)
@@ -49,9 +49,9 @@ En las primeras etapas de diseño, se desarrollaron wireframes que proporcionaba
 
 1. **Pantalla de Login/Registro**: Con botones claros para iniciar sesión o registrarse.
 2. **Pantalla de Login**: Con campos para el correo y contraseña, con un diseño limpio y centrado.
-3. **Pantalla de Registro**: Incluyendo campos para RUT, nombre de usuario, correo electrónico y contraseña.
-4. **Feed Principal**: Mostrando los reportes realizados por los usuarios, con botones para crear un nuevo reporte o navegar por el menú.
-5. **Menú Lateral**: Con opciones como Perfil, Configuración, Mis Reportes, Chats y la opción de Cerrar Sesión.
+3. **Pantalla de Registro**: Incluyendo campos para RUT, nombre de usuario, Avatar, correo electrónico y contraseña.
+4. **Feed Principal**: Mostrando los reportes realizados por los usuarios con sus datos y avatars, con botones para crear un nuevo reporte o navegar por el menú.
+5. **Menú Lateral**: Con opciones como Perfil, Configuración, Mis Reportes y la opción de Cerrar Sesión.
 
 ### Wireframe Propuesto
 
