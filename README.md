@@ -13,7 +13,6 @@ Para ello, hemos establecido algunos objetivos específicos que OSP debe cumplir
 - **Gestionar la autenticación** con el fin de permitir que los usuarios registren y guarden sus reportes.
 - **Visualizar los reportes en tiempo real**, incluyendo detalles como la fecha, ubicación y medios adjuntos.
 - **Proporcionar opciones de configuración y acceso al perfil de usuario**, con un diseño coherente y accesible.
-- **Implementar chats** como medio de comunicación directa entre usuarios y empresas eléctricas.
 
 ### Características disponibles en esta entrega
 
