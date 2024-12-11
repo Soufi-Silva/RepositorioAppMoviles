@@ -27,16 +27,15 @@ Para ello, hemos establecido algunos objetivos específicos que OSP debe cumplir
 - **Frontend**: React Native.
 - **Backend**: Firebase.
 
-## Características a Futuro
+## Características a Futuro v.2
 
 Se planea a corto plazo implementar constantes mejoras en la experiencia de usuario:
-
+Actualmente las version 1.2 cuenta con los siguientes avances:
 - [ ] Perfil de Usuario. (listo)
 - [ ] Mis reportes. (listo)
 - [ ] Configuración. (tema gris)
 - [ ] Edición de imagen y contenido. (listo)
 - [ ] Avatares personalizados. (listo)
-- [ ] Ubicacion en Tiempo real. (pendiente)
 
 ## Inicio de sesión
 
