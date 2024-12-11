@@ -31,13 +31,12 @@ Para ello, hemos establecido algunos objetivos específicos que OSP debe cumplir
 
 Se planea a corto plazo implementar constantes mejoras en la experiencia de usuario:
 
-- [ ] Perfil de Usuario.
-- [ ] Mis reportes.
-- [ ] Configuración.
-- [ ] Chats.
-- [ ] Edición de imagen y contenido.
-- [ ] Avatares personalizados.
-- [ ] Ubicacion en Tiempo real.
+- [ ] Perfil de Usuario. (listo)
+- [ ] Mis reportes. (listo)
+- [ ] Configuración. (tema gris)
+- [ ] Edición de imagen y contenido. (listo)
+- [ ] Avatares personalizados. (listo)
+- [ ] Ubicacion en Tiempo real. (pendiente)
 
 ## Inicio de sesión
 
