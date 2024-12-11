@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import { registerUser } from '../config/firebaseConfig';
-import ImageUploader from '../components/ImageUploader';  // Importa el componente ImageUploader
+import ImageUploader from '../components/ImageUploader';  
 
 const formatRut = (rut) => {
   rut = rut.replace(/\./g, '').replace(/-/g, '');
-  if (rut.length > 1) {
+  if (rut.length > 8) {
     let formattedRut = rut.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     formattedRut += '-' + rut.slice(-1);
     return formattedRut;
@@ -18,7 +18,7 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [rut, setRut] = useState('');
   const [username, setUsername] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');  // Estado para la URL de la imagen de perfil
+  const [avatarUrl, setAvatarUrl] = useState('');  
 
   const handleRutChange = (text) => setRut(formatRut(text));
   const handleUsernameChange = (text) => setUsername(text.startsWith('@') ? text : '@' + text);
@@ -30,7 +30,7 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
     try {
-      await registerUser(email, password, rut, username, avatarUrl); // Pasamos avatarUrl al registrar
+      await registerUser(email, password, rut, username, avatarUrl); 
       console.log('Usuario registrado exitosamente');
       navigation.navigate('Login');
     } catch (error) {
@@ -40,6 +40,13 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      
+      {avatarUrl ? (
+        <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+      ) : (
+        <View style={styles.avatarPlaceholder}></View>
+      )}
+
       <TextInput
         placeholder="RUT"
         value={rut}
@@ -70,8 +77,7 @@ export default function RegisterScreen({ navigation }) {
         placeholderTextColor="#A0A0A0"
       />
       
-      {/* Componente para subir y mostrar la imagen de perfil */}
-      <ImageUploader onUploadSuccess={setAvatarUrl} />
+      {!avatarUrl && <ImageUploader onUploadSuccess={setAvatarUrl} />}
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Crear cuenta</Text>
@@ -90,6 +96,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50, 
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+  },
+  avatarPlaceholder: {
+    width: 100,
+    height: 100,
+    borderRadius: 50, 
+    backgroundColor: '#A0A0A0',
+    marginBottom: 20,
   },
   input: {
     width: '100%',

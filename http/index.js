@@ -1,5 +1,5 @@
 import { auth, database } from '../config/firebaseConfig'; 
-import { ref, push, get, set } from 'firebase/database'; 
+import { ref, push, get, set, update  } from 'firebase/database'; 
 import axios from 'axios';
 
 const URL = 'https://appmoviles-9de8d-default-rtdb.firebaseio.com/';
@@ -38,6 +38,19 @@ export async function saveReporte(task) {
     }
 }
 
+
+// actualizar el avatar 
+export async function updateUserAvatarInFirebase(userId, newAvatarUrl) {
+    try {
+        const userRef = ref(database, `users/${userId}`);
+        await update(userRef, { avatar: newAvatarUrl });
+        console.log('Avatar actualizado con éxito');
+    } catch (error) {
+        console.error('Error al actualizar avatar en Firebase:', error);
+        throw error;
+    }
+}
+
 // ELIMINAR
 export function removeReporte(id) {
     return axios.delete(`${URL}/reportes/${id}.json`);
@@ -46,8 +59,9 @@ export function removeReporte(id) {
 // EDITAR
 export function updateReporte(id, task) {
     const reporteRef = ref(database, `reportes/${id}`);
-    return set(reporteRef, task);  // Aquí 'task' ya incluye la fecha de modificación.
+    return set(reporteRef, task);  
 }
+
 
 
 // OBTENER DESDE BASE DE DATOS
@@ -58,6 +72,8 @@ export async function getReportes() {
 
         for (const key in response.data) {
             const report = response.data[key];
+            const userUid = report.user?.id;  
+            const userAvatar = userUid ? await getAvatarFromUser(userUid) : "https://via.placeholder.com/50";
 
             const obj = {
                 id: key,
@@ -71,7 +87,7 @@ export async function getReportes() {
                 user: {
                     username: report.user?.username || "Usuario desconocido",
                     email: report.user?.email || "Correo no disponible",
-                    avatar: report.user?.avatar || "https://via.placeholder.com/50",
+                    avatar: userAvatar, 
                 },
                 likes: report.likes || 0,
                 likesByUser: report.likesByUser || {}, 
@@ -83,6 +99,66 @@ export async function getReportes() {
         return reportes.reverse();
     } catch (error) {
         console.error("Error al obtener reportes:", error);
+        throw error;
+    }
+}
+
+
+async function getAvatarFromUser(uid) {
+    try {
+        const response = await axios.get(`${URL}/users/${uid}.json`);
+        const userData = response.data;
+
+        
+        return userData?.avatar || "https://via.placeholder.com/150";
+    } catch (error) {
+        console.error("Error al obtener el avatar del usuario:", error);
+        return "https://via.placeholder.com/150"; 
+    }
+}
+
+
+
+export async function getMisReportes(currentUser) {
+    try {
+        const response = await axios.get(`${URL}/reportes.json`);
+        const reportes = [];
+
+        for (const key in response.data) {
+            const report = response.data[key];
+
+           
+            if (report.user?.id === currentUser.uid) {
+                const userUid = report.user?.id;
+
+                
+                const userAvatar = userUid ? await getAvatarFromUser(userUid) : "https://via.placeholder.com/50";
+
+                const obj = {
+                    id: key,
+                    name: report.name,
+                    date: new Date(report.date),
+                    location: {
+                        lat: report.location?.lat,
+                        lng: report.location?.lng,
+                    },
+                    imageUrl: report.imageUrl,
+                    user: {
+                        username: report.user?.username || "Usuario desconocido",
+                        email: report.user?.email || "Correo no disponible",
+                        avatar: userAvatar,
+                    },
+                    likes: report.likes || 0,
+                    likesByUser: report.likesByUser || {},
+                };
+
+                reportes.push(obj);
+            }
+        }
+
+        return reportes.reverse(); 
+    } catch (error) {
+        console.error("Error al obtener los reportes del usuario:", error);
         throw error;
     }
 }

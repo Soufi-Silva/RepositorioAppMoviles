@@ -2,23 +2,36 @@ import React, { useEffect, useState, useContext } from "react";
 import { View, Text, Pressable, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { reverseGeocode } from "../utils/geocode";
-import { getDatabase, ref, get, runTransaction, onValue } from "firebase/database"; 
-import { UserContext } from "../context/UserContext"; 
+import { getDatabase, ref, get, runTransaction, onValue } from "firebase/database";
+import { UserContext } from "../context/UserContext";
 
 function ReporteItem(props) {
     const navigator = useNavigation();
-    const { user } = useContext(UserContext); 
+    const { user } = useContext(UserContext);
+
+    const [userData, setUserData] = useState(null);
     const [formattedDate, setFormattedDate] = useState("");
     const [displayLocation, setDisplayLocation] = useState("Ubicación desconocida");
-    const [likes, setLikes] = useState(props.likes || 0); 
-    const [hasLiked, setHasLiked] = useState(false); 
-    const [isUserReport, setIsUserReport] = useState(false);  
+    const [likes, setLikes] = useState(props.likes || 0);
+    const [hasLiked, setHasLiked] = useState(false);
+    const [isUserReport, setIsUserReport] = useState(false);
 
     useEffect(() => {
         const dateObj = new Date(props.date);
         const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
         setFormattedDate(dateObj.toLocaleDateString("es-ES", options));
     }, [props.date]);
+
+    useEffect(() => {
+        const db = getDatabase();
+        const userRef = ref(db, `users/${props.user.uid}`);
+        console.log(props.user);
+        get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                setUserData(snapshot.val());
+            }
+        });
+    }, [props.user.uid]);
 
     useEffect(() => {
         async function fetchAddress() {
@@ -38,25 +51,24 @@ function ReporteItem(props) {
         }
 
         const db = getDatabase();
-
         const likesRef = ref(db, `reportes/${props.id}/likesByUser/${user?.uid}`);
         get(likesRef).then(snapshot => {
             if (snapshot.exists()) {
-                setHasLiked(true); 
+                setHasLiked(true);
             }
         });
 
         const likesCountRef = ref(db, `reportes/${props.id}/likes`);
         const unsubscribe = onValue(likesCountRef, (snapshot) => {
             if (snapshot.exists()) {
-                setLikes(snapshot.val()); 
+                setLikes(snapshot.val());
             }
         });
 
         return () => {
-            unsubscribe(); 
+            unsubscribe();
         };
-    }, [user, props.id, props.user?.username]); 
+    }, [user, props.id, props.user?.username]);
 
     function goToEdit() {
         navigator.navigate("Edit", { id: props.id });
@@ -71,14 +83,14 @@ function ReporteItem(props) {
                 if (reporte) {
                     if (reporte.likesByUser && reporte.likesByUser[user.uid]) {
                         delete reporte.likesByUser[user.uid];
-                        reporte.likes = (reporte.likes || 0) - 1; 
+                        reporte.likes = (reporte.likes || 0) - 1;
                     }
                 }
                 return reporte;
             });
 
             setLikes(likes - 1);
-            setHasLiked(false); 
+            setHasLiked(false);
         } else {
             await runTransaction(reporteRef, (reporte) => {
                 if (reporte) {
@@ -87,14 +99,14 @@ function ReporteItem(props) {
                     }
                     if (!reporte.likesByUser[user.uid]) {
                         reporte.likesByUser[user.uid] = true;
-                        reporte.likes = (reporte.likes || 0) + 1; 
+                        reporte.likes = (reporte.likes || 0) + 1;
                     }
                 }
                 return reporte;
             });
 
             setLikes(likes + 1);
-            setHasLiked(true); 
+            setHasLiked(true);
         }
     };
 
@@ -102,8 +114,9 @@ function ReporteItem(props) {
         <View style={styles.container}>
             {props.user && (
                 <View style={styles.header}>
-                    <Image source={{
-                            uri: props.user.avatar,
+                    <Image
+                        source={{
+                            uri: props.user.avatar || 'https://via.placeholder.com/150' 
                         }}
                         style={styles.avatar}
                     />
@@ -196,7 +209,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginVertical: 10,
     },
-    likeButton: { 
+    likeButton: {
         paddingVertical: 10,
         borderRadius: 8,
         alignItems: "flex-end",

@@ -1,10 +1,9 @@
 import * as Location from 'expo-location';
 
 /**
- * Realiza la geocodificación inversa (de coordenadas a dirección legible).
- * @param {number} lat - Latitud.
- * @param {number} lng - Longitud.
- * @returns {Promise<string>} Dirección legible.
+ * @param {number} lat 
+ * @param {number} lng 
+ * @returns {Promise<string>}
  */
 
 export async function reverseGeocode(lat, lng) {

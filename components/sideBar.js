@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { UserContext } from '../context/UserContext'; 
 import { logoutUser } from '../config/firebaseConfig'; 
 
 function Sidebar({ isVisible, toggleSidebar }) {
     const navigation = useNavigation();
+    const { isHighContrast } = useContext(UserContext); 
 
     if (!isVisible) return null;
+
     const handleLogout = async () => {
         try {
             await logoutUser();
@@ -19,11 +22,11 @@ function Sidebar({ isVisible, toggleSidebar }) {
 
     return (
         <TouchableWithoutFeedback onPress={toggleSidebar}>
-            <View style={styles.overlay}>
+            <View style={[styles.overlay, isHighContrast && styles.highContrastOverlay]}>
                 <TouchableWithoutFeedback>
-                    <View style={styles.sidebar}>
+                    <View style={[styles.sidebar, isHighContrast && styles.highContrastSidebar]}>
                         <View style={styles.header}>
-                            <Text style={styles.title}>Menú</Text>
+                            <Text style={[styles.title, isHighContrast && styles.highContrastText]}>Menú</Text>
                             <View style={styles.avatarContainer}>
                                 <Image
                                     source={require('../assets/logo.png')}
@@ -33,50 +36,40 @@ function Sidebar({ isVisible, toggleSidebar }) {
                         </View>
 
                         <TouchableOpacity 
-                            style={styles.menuItem} 
+                            style={[styles.menuItem, isHighContrast && styles.highContrastMenuItem]} 
                             onPress={() => {
                                 toggleSidebar();
                                 navigation.navigate('Perfil');
                             }}
                         >
-                            <Text style={styles.menuText}>Perfil</Text>
+                            <Text style={[styles.menuText, isHighContrast && styles.highContrastText]}>Perfil</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                            style={styles.menuItem} 
+                            style={[styles.menuItem, isHighContrast && styles.highContrastMenuItem]} 
                             onPress={() => {
                                 toggleSidebar();
                                 navigation.navigate('Configuracion');
                             }}
                         >
-                            <Text style={styles.menuText}>Configuración</Text>
+                            <Text style={[styles.menuText, isHighContrast && styles.highContrastText]}>Configuración</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                            style={styles.menuItem} 
+                            style={[styles.menuItem, isHighContrast && styles.highContrastMenuItem]} 
                             onPress={() => {
                                 toggleSidebar();
                                 navigation.navigate('MisReportes');
                             }}
                         >
-                            <Text style={styles.menuText}>Mis Reportes</Text>
+                            <Text style={[styles.menuText, isHighContrast && styles.highContrastText]}>Mis Reportes</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                            style={styles.menuItem} 
-                            onPress={() => {
-                                toggleSidebar();
-                                navigation.navigate('Chats');
-                            }}
-                        >
-                            <Text style={styles.menuText}>Chats</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                            style={styles.menuItem} 
+                            style={[styles.menuItem, isHighContrast && styles.highContrastMenuItem]} 
                             onPress={handleLogout}
                         >
-                            <Text style={styles.menuText}>Cerrar Sesión</Text>
+                            <Text style={[styles.menuText, isHighContrast && styles.highContrastText]}>Cerrar Sesión</Text>
                         </TouchableOpacity>
                     </View>
                 </TouchableWithoutFeedback>
@@ -96,6 +89,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
     },
+    highContrastOverlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+    },
     sidebar: {
         width: '70%',
         backgroundColor: '#204C68',
@@ -108,6 +104,9 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 2, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 5,
+    },
+    highContrastSidebar: {
+        backgroundColor: '#333',  
     },
     header: {
         flexDirection: 'row',
@@ -123,7 +122,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#E1E8ED',
         textAlign: 'center',
-        //flex: 1,
+    },
+    highContrastText: {
+        color: '#000000',
     },
     avatarContainer: {
         width: 40,
@@ -141,6 +142,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         backgroundColor: '#3A9AD9',
         borderRadius: 8,
+    },
+    highContrastMenuItem: {
+        backgroundColor: '#555', 
     },
     menuText: {
         fontSize: 18,

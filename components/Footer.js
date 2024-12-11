@@ -1,24 +1,30 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import IconButton from './IconButton'; 
+import { UserContext } from '../context/UserContext'; 
 
 const Footer = ({ navigation }) => {
+    const { isHighContrast, fontSize } = useContext(UserContext); 
+
     return (
-        <View style={styles.footer}>
+        <View style={[styles.footer, { backgroundColor: isHighContrast ? '#000' : '#204C68' }]}>
             <IconButton 
                 name="home" 
-                color="white"  
+                color={isHighContrast ? 'white' : 'white'}  
                 onPress={() => navigation.navigate('ReportesScreen')} 
+                style={{ fontSize }} 
             />
             <IconButton 
                 name="add" 
-                color="white"  
+                color={isHighContrast ? 'white' : 'white'}  
                 onPress={() => navigation.navigate('NewReporte')} 
+                style={{ fontSize }} 
             />
             <IconButton 
                 name="person" 
-                color="white"  
+                color={isHighContrast ? 'white' : 'white'}  
                 onPress={() => navigation.navigate('Perfil')} 
+                style={{ fontSize }} 
             />
         </View>
     );
@@ -34,7 +40,6 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: "#204C68", 
     },
 });
 

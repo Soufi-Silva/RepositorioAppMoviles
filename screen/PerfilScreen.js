@@ -4,35 +4,92 @@ import { UserContext } from '../context/UserContext';
 import { getReportes } from '../http';
 import * as ImagePicker from 'expo-image-picker';
 
-function PerfilScreen() {
-    const { user } = useContext(UserContext);
+import Footer from "../components/Footer"; 
+import { updateUserAvatarInFirebase } from '../http';
+
+function PerfilScreen({ navigation }) {
+    const { user, isHighContrast } = useContext(UserContext);  
     const [isEditing, setIsEditing] = useState(false);
     const [username, setUsername] = useState(user?.username || '');
     const [profileImage, setProfileImage] = useState(user?.avatar || 'https://via.placeholder.com/100');
-    const [userPosts, setUserPosts] = useState([]); 
+    const [userPosts, setUserPosts] = useState([]);
+
+    useEffect(() => {
+        if (user?.avatar) {
+            setProfileImage(user.avatar);
+        }
+    }, [user?.avatar]);
 
     useEffect(() => {
         async function fetchUserPosts() {
             try {
-                const allReportes = await getReportes(); 
-
+                const allReportes = await getReportes();
                 const filteredReportes = allReportes.filter(
                     (reporte) => reporte.user?.username === user?.username
                 );
-                setUserPosts(filteredReportes); 
+                setUserPosts(filteredReportes);
             } catch (error) {
                 console.error('Error al cargar los reportes del usuario:', error);
             }
         }
-    
+
         fetchUserPosts();
     }, [user]);
-    
-    
-    const handleSaveProfile = () => { //Implementar la logica mas adelante 
 
-        console.log('Datos guardados:', { username, profileImage });
-        setIsEditing(false);
+    const uploadImageToCloudinary = async (uri) => {
+        if (!uri) {
+            console.error('La URI de la imagen es inválida');
+            throw new Error('La URI de la imagen es inválida');
+        }
+
+        const cloudName = 'dp7chjr9b'; 
+        const uploadPreset = 'ml_default'; 
+        const apiUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+        const data = new FormData();
+        data.append('file', {
+            uri,
+            type: 'image/jpeg', 
+            name: 'profile.jpg',
+        });
+        data.append('upload_preset', uploadPreset);
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                body: data,
+            });
+
+            if (!response.ok) {
+                throw new Error('Error en la respuesta de Cloudinary');
+            }
+
+            const result = await response.json();
+            return result.secure_url; 
+        } catch (error) {
+            console.error('Error al subir la imagen a Cloudinary:', error);
+            throw error;
+        }
+    };
+
+    const handleSaveProfile = async () => {
+        let newProfileImage = profileImage;
+        if (profileImage !== user?.avatar) {
+            try {
+                newProfileImage = await uploadImageToCloudinary(profileImage);
+            } catch (error) {
+                alert('Error al subir la imagen de perfil.');
+                return;
+            }
+        }
+
+        try {
+            await updateUserAvatarInFirebase(user.uid, newProfileImage);
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Error al actualizar avatar en Firebase:', error);
+            alert('Hubo un error al actualizar el avatar.');
+        }
     };
 
     const handlePickImage = async () => {
@@ -43,8 +100,18 @@ function PerfilScreen() {
             quality: 1,
         });
 
-        if (!result.canceled) {
-            setProfileImage(result.uri);
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+            const selectedImage = result.assets[0].uri;
+
+            if (selectedImage) {
+                setProfileImage(selectedImage); 
+                try {
+                    const uploadedImageUrl = await uploadImageToCloudinary(selectedImage); 
+                    setProfileImage(uploadedImageUrl); 
+                } catch (error) {
+                    alert('Hubo un error al subir la imagen.');
+                }
+            }
         }
     };
 
@@ -53,35 +120,32 @@ function PerfilScreen() {
     );
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, isHighContrast && styles.highContrastContainer]}>
             <View style={styles.profileContainer}>
                 <TouchableOpacity onPress={handlePickImage}>
-                    <Image
-                        source={{ uri: profileImage }}
-                        style={styles.profileImage}
-                    />
+                    <Image source={{ uri: profileImage }} style={styles.profileImage} />
                 </TouchableOpacity>
                 {isEditing ? (
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, isHighContrast && styles.highContrastInput]}
                         value={username}
                         onChangeText={setUsername}
                         placeholder="Nombre de usuario"
                     />
                 ) : (
-                    <Text style={styles.username}>{username}</Text>
+                    <Text style={[styles.username, isHighContrast && styles.highContrastText]}>{username}</Text>
                 )}
-                <Text style={styles.email}>{user?.email}</Text>
+                <Text style={[styles.email, isHighContrast && styles.highContrastText]}>{user?.email}</Text>
                 {isEditing ? (
                     <Button title="Guardar" onPress={handleSaveProfile} />
                 ) : (
-                    <TouchableOpacity onPress={() => setIsEditing(true)} style={styles.editButton}>
+                    <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, isHighContrast && styles.highContrastButton]}>
                         <Text style={styles.editButtonText}>Editar Perfil</Text>
                     </TouchableOpacity>
                 )}
             </View>
 
-            <Text style={styles.sectionTitle}>Tus Posts</Text>
+            <Text style={[styles.sectionTitle, isHighContrast && styles.highContrastText]}>Tus Posts</Text>
             <FlatList
                 data={userPosts}
                 renderItem={renderPost}
@@ -89,8 +153,9 @@ function PerfilScreen() {
                 numColumns={3}
                 style={styles.postsContainer}
             />
+
+            <Footer navigation={navigation} />
         </View>
-        
     );
 }
 
@@ -98,6 +163,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
+    },
+    highContrastContainer: {
+        backgroundColor: '#333',  
     },
     profileContainer: {
         alignItems: 'center',
@@ -115,6 +183,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fff',
     },
+    highContrastText: {
+        color: '#c2c4c4',
+    },
     email: {
         fontSize: 16,
         color: '#ccc',
@@ -125,6 +196,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         backgroundColor: '#3A9AD9',
         borderRadius: 8,
+    },
+    highContrastButton: {
+        backgroundColor: '#555', 
     },
     editButtonText: {
         color: '#fff',
@@ -138,6 +212,10 @@ const styles = StyleSheet.create({
         width: '80%',
         textAlign: 'center',
         marginVertical: 10,
+    },
+    highContrastInput: {
+        backgroundColor: '#555', 
+        color: '#fff',  
     },
     sectionTitle: {
         fontSize: 18,

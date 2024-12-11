@@ -27,7 +27,7 @@ export const registerUser = async (email, password, rut, username, avatarUrl) =>
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    const defaultAvatar = "https://via.placeholder.com/50";
+    const defaultAvatar = "https://via.placeholder.com/100";
     const avatar = avatarUrl || defaultAvatar;
 
     await set(ref(database, 'users/' + user.uid), {

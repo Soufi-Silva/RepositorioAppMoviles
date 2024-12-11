@@ -6,6 +6,8 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [isHighContrast, setIsHighContrast] = useState(false);  
+    const [fontSize, setFontSize] = useState(16);  
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
@@ -21,14 +23,14 @@ export const UserProvider = ({ children }) => {
                         email: currentUser.email,
                         username: userData.username,
                         rut: userData.rut,
-                        avatar: userData.avatar || 'https://via.placeholder.com/100', 
+                        avatar: userData.avatar || 'https://via.placeholder.com/100',
                     });
                 } else {
                     console.error('No se encontraron datos personalizados del usuario.');
                     setUser({
                         uid: currentUser.uid,
                         email: currentUser.email,
-                        avatar: 'https://via.placeholder.com/100', 
+                        avatar: userData.avatar,
                     });
                 }
             } else {
@@ -39,8 +41,28 @@ export const UserProvider = ({ children }) => {
         return () => unsubscribe();
     }, []);
 
+    
+    const toggleHighContrast = () => {
+        setIsHighContrast(prev => !prev);
+    };
+    
+
+    
+    const increaseFontSize = () => setFontSize(prev => Math.min(prev + 2, 30)); 
+
+   
+    const decreaseFontSize = () => setFontSize(prev => Math.max(prev - 2, 10)); 
+
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{
+            user,
+            setUser,
+            isHighContrast,
+            toggleHighContrast,
+            fontSize,
+            increaseFontSize,
+            decreaseFontSize
+        }}>
             {children}
         </UserContext.Provider>
     );

@@ -8,9 +8,11 @@ import { getReportes } from "../http";
 import Footer from "../components/Footer";
 import Sidebar from "../components/sideBar";
 import { logoutUser } from "../config/firebaseConfig";
+import { UserContext } from "../context/UserContext"; 
 
 function ReportesScreen() {
     const reporteCTX = useContext(ReporteContext);
+    const { isHighContrast, fontSize } = useContext(UserContext); 
     const [isError, setError] = useState(false);
     const [isSidebarVisible, setSidebarVisible] = useState(false);
     const navigation = useNavigation();
@@ -24,12 +26,12 @@ function ReportesScreen() {
             headerRight: () => (
                 <IconButton 
                     name="menu" 
-                    color="#000000"
+                    color={isHighContrast ? "#fff" : "#000"} 
                     onPress={toggleSidebar}
                 />
             )
         });
-    }, [navigation]);
+    }, [navigation, isHighContrast]);
 
     useEffect(() => {
         async function getReport() {
@@ -65,10 +67,9 @@ function ReportesScreen() {
             />
         );
     }
-    
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: isHighContrast ? '#000' : '#204C68' }]}>
             {isSidebarVisible && (
                 <View style={styles.sidebarContainer}>
                     <Sidebar isVisible={isSidebarVisible} toggleSidebar={toggleSidebar} />
@@ -77,7 +78,9 @@ function ReportesScreen() {
 
             <View style={styles.mainContent}>
                 {isError ? (
-                    <Text>Error al cargar los reportes</Text>
+                    <Text style={[styles.errorText, { fontSize: fontSize, color: isHighContrast ? '#fff' : '#000' }]}>
+                        Error al cargar los reportes
+                    </Text>
                 ) : (
                     <FlatList
                         data={reporteCTX.reportes}
@@ -94,7 +97,6 @@ function ReportesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#204C68",
     },
     sidebarContainer: {
         ...StyleSheet.absoluteFillObject, 
@@ -102,7 +104,13 @@ const styles = StyleSheet.create({
     },
     mainContent: {
         flex: 1,
-        marginBottom:50,
+        marginBottom: 50,
+    },
+    errorText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 20,
     },
 });
 
