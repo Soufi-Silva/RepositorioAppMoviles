@@ -19,7 +19,7 @@ Para ello, hemos establecido algunos objetivos específicos que OSP debe cumplir
 - [ ] **Registro e Inicio de Sesión**: Los usuarios pueden registrarse y autenticarse utilizando Firebase. Se implementan validaciones para asegurar que los datos ingresados sean correctos.
 - [ ] **Reporte de Incidentes**: Los usuarios pueden crear reportes con descripciones, imágenes y datos de geolocalización.
 - [ ] **Gestión de Reportes**: Visualización de los reportes en una lista con imágenes y detalles relevantes.
-- [ ] **Menú Lateral y Barra de Navegación**: Una barra lateral para acceder rápidamente al perfil, configuración y chats.
+- [ ] **Menú Lateral y Barra de Navegación**: Una barra lateral para acceder rápidamente al perfil y configuración .
 
 ## Tecnologías Utilizadas
 
